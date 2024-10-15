@@ -38,7 +38,7 @@ export default function LatestBlogs({ blogs, imagePath }) {
           ))}
         </div>
         {visibleBlogs < blogs.length && (
-          <Button onClick={handleSeeMore} className="mt-10">
+          <Button onClick={handleSeeMore} className=" bg-button text-black hover:bg-button/80 mt-10">
             See More Articles
           </Button>
         )}

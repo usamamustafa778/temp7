@@ -68,7 +68,7 @@ const Logo = ({ logo, imagePath }) => {
         <Image
           height={dynamicLogoHeight}
           width={dynamicLogoWidth}
-          src="/img/logo.webp"
+          src={imageSrc}
           title={`Logo - ${hostName}`}
           alt={`${logoText || "logo"} - ${hostName}`}
           sizes="(max-width: 768px) 100px, (max-width: 1200px) 150px, 200px"

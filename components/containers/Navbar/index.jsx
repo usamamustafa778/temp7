@@ -1,57 +1,82 @@
-import { cn } from "@/lib/utils";
 import { Menu, Search, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import Logo from "./Logo";
+import { sanitizeUrl } from "@/lib/myFun";
+
 
 export default function Navbar({
-  staticPages,
-  filteredBlogs,
   logo,
   categories,
-  isActive,
-  searchContainerRef,
   imagePath,
   handleSearchToggle,
   handleSearchChange,
-  toggleSidebar,
-  openSearch,
-  category,
+  filteredBlogs,
   searchQuery,
+  openSearch,
 }) {
-  const navLink =
-    "font-semibold capitalize border-b-2 border-transparent hover:text-black hover:border-black transition-all p-3";
   const [sidebar, setSidebar] = useState(false);
-  const menuList = [
-    "Home",
-    "Feauture",
-    "Categories",
-   "Contacts"
-  ];
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = (state) => {
+    setIsDropdownOpen(state);
+  };
+
   return (
     <>
-      <div className=" mx-auto max-w-[1500px] ">
+      <div className="mx-auto max-w-[1500px]">
         <div className="p-10 border-b">
           <Logo logo={logo} imagePath={imagePath} />
         </div>
 
-        <div
-        className="flex items-center justify-between gap-3 relative mx-auto border-b-2 border-black pb-6  max-w-[1500px] "
-          ref={searchContainerRef}
-        >
-          <Menu
-            onClick={() => setSidebar(true)}
-            className="cursor-pointer w-8"
-          />
-          <div className=" hidden  lg:flex  space-x-4 lg:space-x-9 ">
+        <div className="flex items-center justify-between gap-3 relative mx-auto border-b-2 border-black pb-6 max-w-[1500px]">
+          <Menu onClick={() => setSidebar(true)} className="cursor-pointer w-8" />
+          
+          {/* Main Nav Links */}
+          <div className="hidden lg:flex space-x-4 lg:space-x-9">
             <Link href="/">Home</Link>
-            <Link href="#"></Link>
-            <Link href="#">Categories</Link>
-            <Link href="#">Feautures</Link>
-            <Link href="#">Contacts</Link>
+
+            {/* Categories Link */}
+            <div
+              className="relative group"
+              onMouseEnter={() => toggleDropdown(true)}
+              onMouseLeave={() => toggleDropdown(false)}
+            >
+              <Link href="" className="hover:text-black">
+                Categories
+              </Link>
+
+              {/* Categories Dropdown */}
+              {isDropdownOpen && (
+                <div className="absolute left-0 top-full  bg-white shadow-lg rounded-md z-50 p-4 w-[300px] grid grid-cols-1 gap-4">
+                  {categories.map(( category, index) => (
+                    <Link key={index}
+                     
+                    href={`/${encodeURI(sanitizeUrl(category.title))}`}
+                     
+                     >
+                      <div className="flex items-center gap-4 hover:bg-gray-100 p-2 transition">
+                        <Image
+                          src={`${imagePath}/${category.image}`}
+                          alt={category.title}
+                          width={50}
+                          height={50}
+                          className="rounded-md"
+                        />
+                        <span className="font-semibold">{category.title}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link href="">Features</Link>
+            <Link href="">Contacts</Link>
           </div>
 
+          {/* Search Section */}
           {openSearch ? (
             <>
               {searchQuery && (
@@ -60,9 +85,7 @@ export default function Navbar({
                     <Link
                       key={index}
                       title={item.title}
-                      href={`/${sanitizeUrl(
-                        item.article_category
-                      )}/${sanitizeUrl(item?.title)}`}
+                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
                     >
                       <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
                         {item.title}
@@ -88,11 +111,10 @@ export default function Navbar({
               Search
             </button>
           )}
-
-        
         </div>
       </div>
 
+      {/* Sidebar for Mobile */}
       <div
         className={`sidebar fixed top-0 left-0 h-screen flex flex-col justify-between bg-black text-white z-50 overflow-x-hidden p-10 lg:p-6 ${
           sidebar ? "open" : "-ml-96"
@@ -101,53 +123,29 @@ export default function Navbar({
         <div>
           <div className="flex items-center justify-between">
             <Link href="/">
-              <Image
-                height={70}
-                width={140}
-                src={logo}
-                alt="logo"
-                className="mt-1"
-              />
+              <Image height={70} width={140} src={logo} alt="logo" className="mt-1" />
             </Link>
-            <X
-              className="w-8 text-white cursor-pointer"
-              onClick={() => setSidebar(false)}
-            />
+            <X className="w-8 text-white cursor-pointer" onClick={() => setSidebar(false)} />
           </div>
 
-          <div className="   flex lg:hidden  items-center gap-3 font-normal mr-5 mt-8 w-full">
-            <Search className="w-7" />
-            <input
-              className="bg-transparent border-b border-white/50 pb-1 outline-none flex-1"
-              placeholder="Search..."
-            />
-          </div>
-
-          <p className=" text-sm mt-10   border-b ">
-          Magazine & Blog WordPress Theme
-          </p>
-          <div className="  flex lg:hidden text-2xl  flex-col gap-6 mt-16">
-            {menuList.map((item, index) => (
-              <div
-                className="uppercase font-bold cursor-pointer hover:opacity-70 transition-all"
-                key={index}
-              >
-                {item}
-              </div>
-            ))}
+          {/* Sidebar Menu Links */}
+          <div className="flex lg:hidden text-2xl flex-col gap-6 mt-16">
+            <Link href="/">Home</Link>
+            <Link href="#">Features</Link>
+            <Link href="#">Contacts</Link>
           </div>
         </div>
         <div>
-          <p className="text-normal  ">© 2024 Chronicle. All Rights Reserved.</p>
+          <p className="text-normal">© 2024 Chronicle. All Rights Reserved.</p>
         </div>
       </div>
 
+      {/* Sidebar Styles */}
       <style jsx>{`
         .sidebar {
           width: 0;
           transition: width 0.3s ease;
         }
-
         .sidebar.open {
           width: 300px;
         }

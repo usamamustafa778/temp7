@@ -43,7 +43,7 @@ const BlogCard = ({
       <p className="text-sm font-bold text-gray-800">{category}</p>
 
         <Link
-          className="font-extrabold md:text-3xl leading-tight"
+          className="font-extrabold md:text-2xl leading-tight"
           title={title}
           href={encodedHref}
         >

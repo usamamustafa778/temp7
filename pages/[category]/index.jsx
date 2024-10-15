@@ -19,10 +19,10 @@ import { cn } from "@/lib/utils";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import Navbar from "@/components/containers/Navbar";
 import useBreadcrumbs from "@/lib/useBreadcrumbs";
+import Rightbar from "@/components/containers/Rightbar";
 
 // Font
 import { Raleway } from "next/font/google";
-import Rightbar from "@/components/containers/Rightbar";
 const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
 });
@@ -44,14 +44,10 @@ export default function Categories({
 }) {
   const router = useRouter();
   const { category } = router.query;
-
   const breadcrumbs = useBreadcrumbs();
 
   const filteredBlogList = blog_list.filter((item) => {
     const searchContent = sanitizeUrl(category);
-    // console.log("Search Content:", searchContent);
-    // console.log("Item category:", sanitizeUrl(item.article_category));
-
     return sanitizeUrl(item.article_category) === searchContent;
   });
 
@@ -71,10 +67,8 @@ export default function Categories({
     }
   }, [category, router]);
 
-  const page = layout?.find((page) => page.page === "category");
-
   return (
-    <div className={cn(myFont.className, "flex flex-col min-h-screen")}>
+    <div >
       <Head>
         <meta charSet="UTF-8" />
         <title>
@@ -93,7 +87,6 @@ export default function Categories({
         <link rel="author" href={`https://www.${domain}`} />
         <link rel="publisher" href={`https://www.${domain}`} />
         <link rel="canonical" href={`https://www.${domain}/${category}`} />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -122,132 +115,108 @@ export default function Categories({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    logo={logo}
-                    nav_type={nav_type}
-                    category={category}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    contact_details={contact_details}
-                  />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "search result":
-                return (
-                  <FullContainer key={index} className="mb-12">
-                    <Container>
-                      <div className="grid grid-cols-1 md:grid-cols-home gap-12 w-full">
-                        <div>
-                          <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
-                            Browsing: {category?.replaceAll("-", " ")}
-                          </h1>
-                          {filteredBlogList?.length > 0 ? (
-                            ""
-                          ) : (
-                            <div className="flex items-center justify-center border px-10 py-40 text-lg bg-gray-200">
-                              No articles found related to {category}
-                            </div>
-                          )}
-                          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {filteredBlogList.map((item, index) => (
-                              <div key={index}>
-                                <Link
-                                  title={item?.title || "Article Link"}
-                                  href={`/${sanitizeUrl(
-                                    item.article_category
-                                  )}/${sanitizeUrl(item?.title)}`}
-                                >
-                                  <div className="overflow-hidden relative min-h-40 rounded lg:min-h-52 w-full bg-black flex-1">
-                                    <Image
-                                      title={item?.title || item.imageTitle}
-                                      src={
-                                        item.image
-                                          ? `${imagePath}/${item.image}`
-                                          : "/no-image.png"
-                                      }
-                                      fill={true}
-                                      loading="lazy"
-                                      alt="blog"
-                                      className="w-full h-full object-cover absolute top-0 hover:scale-125 transition-all"
-                                    />
-                                  </div>
-                                </Link>
-                                <Link
-                                  title={item?.title || "Article Link"}
-                                  href={`/${sanitizeUrl(
-                                    item.article_category
-                                  )}/${sanitizeUrl(item?.title)}`}
-                                >
-                                  <p className="mt-2 lg:mt-4 font-bold text-lg text-inherit leading-tight hover:underline">
-                                    {item.title}
-                                  </p>
-                                </Link>
-                                <div className="flex items-center gap-2 mt-2">
-                                  <p className="text-sm font-semibold">
-                                    <span className="text-gray-400 text-sm">
-                                      By
-                                    </span>
-                                    : {item.author}
-                                  </p>
-                                  <span className="text-gray-400">--</span>
-                                  <p className="text-sm text-gray-400 font-semibold">
-                                    {dayjs(item?.published_at)?.format(
-                                      "MMM D, YYYY"
-                                    )}
-                                  </p>
-                                </div>
-                                <p className="text-gray-500 mt-4">
-                                  {item.tagline}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <Rightbar
-                          about_me={about_me}
-                          tag_list={tag_list}
-                          blog_list={blog_list}
-                          imagePath={imagePath}
-                          categories={categories}
-                          contact_details={contact_details}
-                          widgets={page?.widgets}
+      {/* Navbar */}
+      <Navbar
+        logo={logo}
+        nav_type={nav_type}
+        category={category}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        contact_details={contact_details}
+      />
+
+      {/* Breadcrumbs */}
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
+        </Container>
+      </FullContainer>
+
+      {/* Blog List and Right Sidebar */}
+      <FullContainer className="mb-12">
+        <Container>
+          <div className="grid grid-cols-1 md:grid-cols-home2 gap-12 w-full">
+            <div>
+              <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
+                Browsing: {category?.replaceAll("-", " ")}
+              </h1>
+              {filteredBlogList?.length > 0 ? (
+                ""
+              ) : (
+                <div className="flex items-center justify-center border px-10 py-40 text-lg bg-gray-200">
+                  No articles found related to {category}
+                </div>
+              )}
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                {filteredBlogList.map((item, index) => (
+                  <div key={index}>
+                    <Link
+                      title={item?.title || "Article Link"}
+                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
+                    >
+                      <div className="overflow-hidden relative min-h-40 rounded lg:min-h-52 w-full bg-black flex-1">
+                        <Image
+                          title={item?.title || item.imageTitle}
+                          src={
+                            item.image
+                              ? `${imagePath}/${item.image}`
+                              : "/no-image.png"
+                          }
+                          fill={true}
+                          loading="lazy"
+                          alt="blog"
+                          className="w-full h-full object-cover absolute top-0 hover:scale-125 transition-all"
                         />
                       </div>
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    category={category}
-                    footer_type={footer_type}
-                  />
-                );
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+                    </Link>
+                    <Link
+                      title={item?.title || "Article Link"}
+                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
+                    >
+                      <p className="mt-2 lg:mt-4 font-bold text-lg text-inherit leading-tight hover:underline">
+                        {item.title}
+                      </p>
+                    </Link>
+                    <div className="flex items-center gap-2 mt-2">
+                      <p className="text-sm font-semibold">
+                        <span className="text-gray-400 text-sm">By</span>
+                        : {item.author}
+                      </p>
+                      <span className="text-gray-400">--</span>
+                      <p className="text-sm text-gray-400 font-semibold">
+                        {dayjs(item?.published_at)?.format("MMM D, YYYY")}
+                      </p>
+                    </div>
+                    <p className="text-gray-500 mt-4">{item.tagline}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
+            {/* Right Sidebar */}
+            <Rightbar
+              about_me={about_me}
+              tag_list={tag_list}
+              blog_list={blog_list}
+              imagePath={imagePath}
+              categories={categories}
+              contact_details={contact_details}
+            />
+          </div>
+        </Container>
+      </FullContainer>
+
+      {/* Footer */}
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        category={category}
+        footer_type={footer_type}
+      />
+
+      {/* JSON-LD for Breadcrumbs and Website Data */}
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -364,7 +333,7 @@ export async function getServerSideProps({ req, query }) {
       copyright: copyright?.data[0]?.value || null,
       domain: domain === "hellospace.us" ? req?.headers?.host : domain,
       about_me: about_me.data[0] || null,
-      contact_details: contact_details.data[0].value,
+      contact_details: contact_details.data[0]?.value || null,
       tag_list: tag_list?.data[0]?.value || null,
       nav_type: nav_type?.data[0]?.value || {},
       footer_type: footer_type?.data[0]?.value || {},

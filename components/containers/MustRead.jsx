@@ -11,14 +11,14 @@ export default function MustRead({ blog_list = [], imagePath }) {
 
   return (
     mustReadBlogs?.length > 0 && (
-      <FullContainer className="py-16 text-center">
-        <Container className="border border-gray-200 px-3 py-9 md:px-9">
-          <h2 className="font-bold text-3xl -mt-14 bg-white px-6">Must Read</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mt-11 mb-3">
+      <div>
+        <div>
+          <div className="grid grid-cols-1  gap-8 w-full  mb-3">
             {mustReadBlogs.map((item, index) => (
               <BlogCard
                 key={item.id || index}
                 title={item.title}
+                published_at={item.published_at}
                 author={item.author}
                 date={item.published_at}
                 tagline={item.tagline}
@@ -32,11 +32,12 @@ export default function MustRead({ blog_list = [], imagePath }) {
                 category={sanitizeUrl(item.article_category) || "#"}
                 imageTitle={item.imageTitle}
                 altImage={item.altImage}
+
               />
             ))}
           </div>
-        </Container>
-      </FullContainer>
+        </div>
+      </div>
     )
   );
 }
@@ -44,6 +45,7 @@ export default function MustRead({ blog_list = [], imagePath }) {
 function BlogCard({
   title,
   image,
+  published_at,
   href,
   category,
   imageTitle = "Article Thumbnail",
@@ -51,33 +53,43 @@ function BlogCard({
   tagline,
 }) {
   return (
-    <div className="flex flex-col items-center text-center">
-      <Link
-        href={href || "#"}
+    <div className="grid grid-cols-2  items-center text-start">
+    {/* Image Link */}
+    <Link
+      href={href || "#"}
+      title={imageTitle}
+      className="relative overflow-hidden w-full  h-[195px]"
+    >
+      <Image
+        src={image}
         title={imageTitle}
-        className="relative overflow-hidden w-full h-[195px]"
-      >
-        <Image
-          src={image}
-          title={imageTitle}
-          alt={altImage || tagline}
-          priority={false}
-          width={298}
-          height={195}
-          loading="lazy"
-          sizes="(max-width: 768px) 100vw, (min-width: 768px) 50vw, 33vw"
-          className="w-full h-full hover:scale-110 transition-all"
-          style={{ objectFit: "cover" }}
-        />
-      </Link>
+        alt={altImage || tagline}
+        priority={false}
+        width={298}
+        height={195}
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, (min-width: 768px) 50vw, 33vw"
+        className=" h-full hover:scale-110 transition-all"
+        style={{ objectFit: "cover" }}
+      />
+    </Link>
+  
+    {/* Text Section */}
+    <div className="flex flex-col justify-center w-full md:w-auto px-4">
+      {/* Category Link */}
       <Link href={category}>
-        <Badge className="text-center whitespace-nowrap my-2">{category}</Badge>
+        <p className="text-xl text-gray-500 font-bold my-2">{category}</p>
       </Link>
+  
+      {/* Title Link */}
       <Link href={href || ""}>
-        <p className="font-semibold leading-5 text-lg hover:underline">
-          {title}
-        </p>
+        <p className="font-bold text-2xl">{title}</p>
       </Link>
+  
+      {/* Published Date */}
+      <p>{published_at}</p>
     </div>
+  </div>
+  
   );
 }

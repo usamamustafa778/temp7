@@ -12,7 +12,6 @@ import JsonLd from "@/components/json/JsonLd";
 import BlogCard from "@/components/common/BlogCard";
 import Link from "next/link";
 import Image from "next/image";
-
 import {
   callBackendApi,
   getDomain,
@@ -20,12 +19,7 @@ import {
   robotsTxt,
   sanitizeUrl,
 } from "@/lib/myFun";
-
-import { Raleway } from "next/font/google";
 import MustRead from "@/components/containers/MustRead";
-const myFont = Raleway({
-  subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
-});
 
 export default function Home({
   logo,
@@ -44,198 +38,18 @@ export default function Home({
   nav_type,
   footer_type,
 }) {
-  const page = layout?.find((page) => page.page === "home");
   const lastFiveBlogs = blog_list.slice(-5);
 
-  const renderSections = () => {
-    return page?.enable
-      ? page.sections.map((item, index) => {
-          if (!item.enable) return null;
+  const page = layout?.find((page) => page.page === "home");
 
-          switch (item.section?.toLowerCase()) {
-            case "navbar":
-              return (
-                <Navbar
-                  key={index}
-                  logo={logo}
-                  imagePath={imagePath}
-                  blog_list={blog_list}
-                  categories={categories}
-                  nav_type={nav_type}
-                  contact_details={contact_details}
-                />
-              );
-
-            // case "most popular":
-            //   return (
-            //     <MostPopular
-            //       key={index}
-            //       blog_list={blog_list}
-            //       imagePath={imagePath}
-            //     />
-            //   );
-            case "banner":
-              return (
-                <div key={index} className="pt-8 mx-auto max-w-[1500px]">
-                  <div>
-                    <div className="grid grid-cols-1 md:grid-cols-home gap-12 w-full">
-                      {renderHomeList(blog_list)}
-
-                      <div className="flex flex-col gap-10 w-full">
-                        {blog_list?.map(
-                          (item, index) =>
-                            item.isFeatured && (
-                              <div key={index}>
-                                <BlogCard
-                                  key={index}
-                                  category={
-                                    sanitizeUrl(item.article_category) || "#"
-                                  }
-                                  title={item.title}
-                                  published_at={item.published_at}
-                                  tagline={item.tagline}
-                                  image={
-                                    item.image
-                                      ? `${imagePath}/${item.image}`
-                                      : "/no-image.png"
-                                  }
-                                  href={`/${encodeURI(
-                                    sanitizeUrl(item.article_category)
-                                  )}/${encodeURI(sanitizeUrl(item.title))}`}
-                                  imageHeight="h-72 md:h-[420px]"
-                                  imageTitle={
-                                    item.imageTitle ||
-                                    item.title ||
-                                    "Blog Image Title"
-                                  }
-                                  altImage={
-                                    item.altImage ||
-                                    item.tagline ||
-                                    "Article Thumbnail"
-                                  }
-                                />
-                              </div>
-                            )
-                        )}
-                      </div>
-
-                      <div className=" pt-5 px-4 flex flex-col items-center">
-                        <div className="flex flex-col ">
-                          {lastFiveBlogs.map((item, index) => (
-                            <div
-                              key={index}
-                              className="grid grid-cols-widget gap-3 py-3 border-b last:border-none"
-                            >
-                              <div>
-                                <Link
-                                  title={item.title || "Article Link"}
-                                  href={`/${encodeURI(
-                                    sanitizeUrl(item.article_category)
-                                  )}/${encodeURI(sanitizeUrl(item.title))}`}
-                                >
-                                  <p className="font-semibold leading-tight hover:underline">
-                                    {item.title}
-                                  </p>
-                                </Link>
-                              </div>
-                              <Link
-                                title={item.title || "Article"}
-                                href={`/${encodeURI(
-                                  sanitizeUrl(item.article_category)
-                                )}/${encodeURI(sanitizeUrl(item.title))}`}
-                              >
-                                <div className="overflow-hidden relative min-h-20 w-full bg-black flex-1 rounded">
-                                  <Image
-                                    title={
-                                      item?.imageTitle ||
-                                      item?.title ||
-                                      "Article Thumbnail"
-                                    }
-                                    alt={
-                                      item?.tagline ||
-                                      item?.altText ||
-                                      "Article Thumbnail"
-                                    }
-                                    src={
-                                      item.image
-                                        ? `${imagePath}/${item.image}`
-                                        : "/no-image.png"
-                                    }
-                                    fill
-                                    loading="lazy"
-                                    className="object-cover hover:scale-125 transition-all"
-                                    style={{ objectFit: "cover" }}
-                                  />
-                                </div>
-                              </Link>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-
-            case "articles":
-              return (
-                <div key={index} className="pt-8 mx-auto max-w-[1500px]">
-                  <div className=" border-t-4 pt-5 px-4  text-center py-10">
-                    <h2 className="bg-white  px-5 text-4xl font-bold  -mt-10  text-center">
-                      Latest Posts
-                    </h2>
-                    <h2 className="  px-5 text-xl font-semibold  text-gray-500  text-center">
-                      Stay up-to-date
-                    </h2>
-                  </div>
-                  <div>
-                    <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
-                      <div className="flex flex-col gap-10 w-full">
-                        {renderBlogList(blog_list)}
-                      </div>
-
-                      <Rightbar
-                        widgets={page?.widgets}
-                        about_me={about_me}
-                        tag_list={tag_list}
-                        blog_list={blog_list}
-                        imagePath={imagePath}
-                        categories={categories}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-
-            case "must read":
-              return (
-                <MustRead
-                  key={index}
-                  blog_list={blog_list}
-                  imagePath={imagePath}
-                />
-              );
-            case "footer":
-              return (
-                <Footer
-                  key={index}
-                  imagePath={imagePath}
-                  blog_list={blog_list}
-                  categories={categories}
-                  footer_type={footer_type}
-                />
-              );
-            default:
-              return null;
-          }
-        })
-      : "Page Disabled, under maintenance";
-  };
-
+  // Function to render the home list
   const renderHomeList = () => {
     return (
-      <div className="grid  gap-5 md:gap-10">
-        <div className="flex flex-col gap-4">
+      <div className=" hidden lg:flex flex-col gap-5 md:gap-6">
+        <h2 className=" text-xl  text-center font-bold ">
+          Editor&apos;s Choice
+        </h2>
+        <div className="flex flex-col ">
           {blog_list?.slice(0, 1).map((item, index) => (
             <BlogCard
               key={index}
@@ -248,13 +62,14 @@ export default function Home({
                 sanitizeUrl(item.article_category)
               )}/${encodeURI(sanitizeUrl(item.title))}`}
               imageHeight="h-72 md:h-[220px]"
+              imageWidth=" md:w-[100px] "
               imageTitle={item.imageTitle || item.title || "Blog Image Title"}
               altImage={item.altImage || item.tagline || "Article Thumbnail"}
-              className={`border-none`}
+              className="border-none  w-72"
             />
           ))}
         </div>
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col ">
           {blog_list?.slice(1, 2).map((item, index) => (
             <BlogCard
               key={index}
@@ -269,7 +84,7 @@ export default function Home({
               imageHeight={index === 0 ? "h-40" : "h-72 md:h-[400px]"}
               imageTitle={item.imageTitle || item.title || "Blog Image Title"}
               altImage={item.altImage || item.tagline || "Article Thumbnail"}
-              className={`border-none`}
+              className="border-none  w-72 "
             />
           ))}
         </div>
@@ -289,7 +104,6 @@ export default function Home({
                 category={sanitizeUrl(item.article_category) || "#"}
                 title={item.title}
                 published_at={item.published_at}
-                // tagline={item.tagline}
                 image={
                   item.image ? `${imagePath}/${item.image}` : "/no-image.png"
                 }
@@ -331,7 +145,7 @@ export default function Home({
   };
 
   return (
-    <div className={`min-h-screen ${myFont.className}`}>
+    <div className="min-h-screen">
       <Head>
         <meta charSet="UTF-8" />
         <title>{meta?.title}</title>
@@ -367,7 +181,167 @@ export default function Home({
         />
       </Head>
 
-      {renderSections()}
+      {/* Directly render all components in order without conditions */}
+      <Navbar
+        logo={logo}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        nav_type={nav_type}
+        contact_details={contact_details}
+      />
+
+      <div className="pt-8 mx-auto max-w-[1500px]">
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-home gap-4 w-full">
+            {renderHomeList(blog_list)}
+
+            <Banner
+              data={banner.value}
+              image={`${imagePath}/${banner?.file_name}`}
+              blog_list={blog_list}
+            />
+
+            <div className="pt-5 px-4 flex flex-col items-center">
+              <div className="lg:flex  lg:flex-col">
+                <h2 className=" text-center font-bold text-xl ">
+                  Popular-Posts
+                </h2>
+                {lastFiveBlogs.map((item, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-widget gap-3 py-3 border-b last:border-none"
+                  >
+                    <div>
+                      <Link
+                        title={item.title || "Article Link"}
+                        href={`/${encodeURI(
+                          sanitizeUrl(item.article_category)
+                        )}/${encodeURI(sanitizeUrl(item.title))}`}
+                      >
+                        <p className="font-semibold leading-tight hover:underline">
+                          {item.title}
+                        </p>
+                      </Link>
+                    </div>
+                    <Link
+                      title={item.title || "Article"}
+                      href={`/${encodeURI(
+                        sanitizeUrl(item.article_category)
+                      )}/${encodeURI(sanitizeUrl(item.title))}`}
+                    >
+                      <div className="overflow-hidden relative min-h-20 w-full bg-black flex-1 rounded">
+                        <Image
+                          title={
+                            item?.imageTitle ||
+                            item?.title ||
+                            "Article Thumbnail"
+                          }
+                          alt={
+                            item?.tagline ||
+                            item?.altText ||
+                            "Article Thumbnail"
+                          }
+                          src={
+                            item.image
+                              ? `${imagePath}/${item.image}`
+                              : "/no-image.png"
+                          }
+                          fill
+                          loading="lazy"
+                          className="object-cover hover:scale-125 transition-all"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-8 mx-auto max-w-[1500px]">
+        <div className="border-t-4 pt-5 px-4 text-center py-10">
+          <h2 className="bg-white px-5 text-4xl font-bold -mt-10 text-center">
+            Latest Posts
+          </h2>
+          <h2 className="px-5 text-xl font-semibold text-gray-500 text-center">
+            Stay up-to-date
+          </h2>
+        </div>
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
+            <div className="flex flex-col gap-10 w-full">
+              {renderBlogList(blog_list)}
+            </div>
+
+            <Rightbar
+              // widgets={page?.widgets}
+              about_me={about_me}
+              tag_list={tag_list}
+              blog_list={blog_list}
+              imagePath={imagePath}
+              categories={categories}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-gray-200 px-3 py-9 md:px-9 mx-auto max-w-[1500px] text-center mt-20">
+        <h2 className="font-bold text-3xl -mt-14 bg-white ">
+          Editor&apos;s Choice
+        </h2>
+        <h2 className="font-bold text-xl bg-white text-gray-400  px-6">
+          Optional Subtitle
+        </h2>
+        <div className="grid lg:grid-cols-2 py-16 text-center gap-6">
+          <div className="flex flex-col  w-full">
+            {blog_list?.map(
+              (item, index) =>
+                item.isFeatured && (
+                  <div className="text-start" key={index}>
+                    <BlogCard
+                      category={sanitizeUrl(item.article_category) || "#"}
+                      title={item.title}
+                      published_at={item.published_at}
+                      tagline={item.tagline}
+                      image={
+                        item.image
+                          ? `${imagePath}/${item.image}`
+                          : "/no-image.png"
+                      }
+                      href={`/${encodeURI(
+                        sanitizeUrl(item.article_category)
+                      )}/${encodeURI(sanitizeUrl(item.title))}`}
+                      imageHeight="h-72 md:h-[620px]"
+                      imageWidth="w-full" // Ensuring the image takes full width
+                      imageTitle={
+                        item.imageTitle || item.title || "Blog Image Title"
+                      }
+                      altImage={
+                        item.altImage || item.tagline || "Article Thumbnail"
+                      }
+                      className="object-cover" // Ensure images are cropped to fit within the container
+                    />
+                  </div>
+                )
+            )}
+          </div>
+
+          {/* Must Read Section */}
+          <MustRead blog_list={blog_list} imagePath={imagePath} />
+        </div>
+      </div>
+
+      <Footer
+        logo={logo}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        footer_type={footer_type}
+      />
 
       <JsonLd
         data={{
@@ -501,10 +475,10 @@ export async function getServerSideProps({ req }) {
       layout: layout?.data[0]?.value || null,
       blog_list: blog_list?.data[0]?.value || [],
       categories: categories?.data[0]?.value || null,
-      copyright: copyright?.data[0].value || null,
+      copyright: copyright?.data[0]?.value || null,
       about_me: about_me?.data[0] || null,
-      banner: banner?.data[0],
-      contact_details: contact_details?.data[0]?.value,
+      banner: banner?.data[0] || null,
+      contact_details: contact_details?.data[0]?.value || null,
       nav_type: nav_type?.data[0]?.value || {},
       footer_type: footer_type?.data[0]?.value || {},
       tag_list: tag_list?.data[0]?.value || null,
