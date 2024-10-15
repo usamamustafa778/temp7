@@ -106,7 +106,7 @@ export default function Rightbar({
   const renderLatestPosts = () => (
     <div className=" pt-5 px-4 flex flex-col items-center">
       <h2 className="bg-white px-5 font-bold text-lg -mt-9 text-center">
-        EDITOR'S CHOICE
+        EDITOR`&apos;`S CHOICE
       </h2>
       <div className="flex flex-col my-3">
         {lastFiveBlogs.map((item, index) => (
