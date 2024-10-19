@@ -5,7 +5,7 @@ import { sanitizeUrl } from "@/lib/myFun";
 
 export default function LatestPosts({ blog_list, imagePath }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-2">
       <p className="font-bold">Latest Posts</p>
       {blog_list
         ?.slice(-3)

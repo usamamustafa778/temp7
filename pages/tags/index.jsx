@@ -16,6 +16,7 @@ import useBreadcrumbs from "@/lib/useBreadcrumbs";
 // Font
 import { Raleway } from "next/font/google";
 import Rightbar from "@/components/containers/Rightbar";
+
 const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
 });
@@ -59,15 +60,8 @@ export default function Tags({
     </div>
   );
 
-  const page = layout?.find((page) => page.page === "tags");
-
   return (
-    <div
-      className={cn(
-        myFont.className,
-        "flex flex-col min-h-screen justify-between"
-      )}
-    >
+    <div>
       <Head>
         <meta charSet="UTF-8" />
         <title>
@@ -86,7 +80,6 @@ export default function Tags({
         <link rel="author" href={`https://www.${domain}`} />
         <link rel="publisher" href={`https://www.${domain}`} />
         <link rel="canonical" href={`https://www.${domain}/tags`} />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -115,69 +108,53 @@ export default function Tags({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    logo={logo}
-                    nav_type={nav_type}
-                    category={category}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    contact_details={contact_details}
-                  />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="py-8" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "tags":
-                return (
-                  <FullContainer key={index} className="mb-12">
-                    <Container>
-                      <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
-                        {meta?.title}
-                      </h1>
-                      <div className="grid grid-cols-1 md:grid-cols-home gap-12 w-full">
-                        <div> {renderTags()}</div>
-                        <Rightbar
-                          about_me={about_me}
-                          tag_list={tag_list}
-                          blog_list={blog_list}
-                          imagePath={imagePath}
-                          categories={categories}
-                          contact_details={contact_details}
-                          widgets={page?.widgets}
-                        />
-                      </div>
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    category={category}
-                  />
-                );
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+      {/* Render Navbar */}
+      <Navbar
+        logo={logo}
+        nav_type={nav_type}
+        category={category}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        contact_details={contact_details}
+      />
 
+      {/* Render Breadcrumbs */}
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="py-8" />
+        </Container>
+      </FullContainer>
+
+      {/* Render Tags */}
+      <FullContainer className="mb-12">
+        <Container>
+          <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
+            {meta?.title}
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
+            <div>{renderTags()}</div>
+            <Rightbar
+              about_me={about_me}
+              tag_list={tag_list}
+              blog_list={blog_list}
+              imagePath={imagePath}
+              categories={categories}
+              contact_details={contact_details}
+            />
+          </div>
+        </Container>
+      </FullContainer>
+
+      {/* Render Footer */}
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        category={category}
+      />
+
+      {/* Render JSON-LD */}
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -224,11 +201,6 @@ export default function Tags({
               name: domain,
               description: meta?.description,
               inLanguage: "en-US",
-              // potentialAction: {
-              //   "@type": "SearchAction",
-              //   target: `http://${domain}/search?q={search_term_string}`,
-              //   "query-input": "required name=search_term_string",
-              // },
               publisher: {
                 "@type": "Organization",
                 "@id": `http://${domain}`,
@@ -279,11 +251,6 @@ export async function getServerSideProps({ req, query }) {
     query,
     type: "contact_details",
   });
-  const copyright = await callBackendApi({
-    domain,
-    query,
-    type: "copyright",
-  });
   const blog_list = await callBackendApi({ domain, query, type: "blog_list" });
   const categories = await callBackendApi({
     domain,
@@ -307,12 +274,9 @@ export async function getServerSideProps({ req, query }) {
       favicon: favicon?.data[0]?.file_name || null,
       logo: logo?.data[0],
       layout: layout?.data[0]?.value || null,
-      banner: banner.data[0] || null,
       blog_list: blog_list.data[0].value,
       categories: categories?.data[0]?.value || null,
       footer_text: footer_text?.data[0]?.value || null,
-      copyright: copyright?.data[0]?.value || null,
-      domain: domain === "hellospace.us" ? req?.headers?.host : domain,
       about_me: about_me.data[0] || null,
       contact_details: contact_details.data[0].value,
       tag_list: tag_list?.data[0]?.value || null,

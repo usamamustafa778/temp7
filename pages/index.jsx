@@ -37,65 +37,16 @@ export default function Home({
   tag_list,
   nav_type,
   footer_type,
+  logo_white
 }) {
   const lastFiveBlogs = blog_list.slice(-5);
 
   const page = layout?.find((page) => page.page === "home");
 
-  // Function to render the home list
-  const renderHomeList = () => {
-    return (
-      <div className=" hidden lg:flex flex-col gap-5 md:gap-6">
-        <h2 className=" text-xl  text-center font-bold ">
-          Editor&apos;s Choice
-        </h2>
-        <div className="flex flex-col ">
-          {blog_list?.slice(0, 1).map((item, index) => (
-            <BlogCard
-              key={index}
-              title={item.title}
-              published_at={item.published_at}
-              image={
-                item.image ? `${imagePath}/${item.image}` : "/no-image.png"
-              }
-              href={`/${encodeURI(
-                sanitizeUrl(item.article_category)
-              )}/${encodeURI(sanitizeUrl(item.title))}`}
-              imageHeight="h-72 md:h-[220px]"
-              imageWidth=" md:w-[100px] "
-              imageTitle={item.imageTitle || item.title || "Blog Image Title"}
-              altImage={item.altImage || item.tagline || "Article Thumbnail"}
-              className="border-none  w-72"
-            />
-          ))}
-        </div>
-        <div className="flex flex-col ">
-          {blog_list?.slice(1, 2).map((item, index) => (
-            <BlogCard
-              key={index}
-              title={item.title}
-              published_at={item.published_at}
-              image={
-                item.image ? `${imagePath}/${item.image}` : "/no-image.png"
-              }
-              href={`/${encodeURI(
-                sanitizeUrl(item.article_category)
-              )}/${encodeURI(sanitizeUrl(item.title))}`}
-              imageHeight={index === 0 ? "h-40" : "h-72 md:h-[400px]"}
-              imageTitle={item.imageTitle || item.title || "Blog Image Title"}
-              altImage={item.altImage || item.tagline || "Article Thumbnail"}
-              className="border-none  w-72 "
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   const renderBlogList = () => {
     return (
       <div className="grid grid-cols-2 gap-5 md:gap-10">
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-5">
           {blog_list
             ?.slice(0, blog_list?.length > 7 ? 4 : 2)
             .map((item, index) => (
@@ -116,7 +67,7 @@ export default function Home({
               />
             ))}
         </div>
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-5">
           {blog_list
             ?.slice(
               blog_list?.length > 7 ? 5 : 2,
@@ -191,10 +142,66 @@ export default function Home({
         contact_details={contact_details}
       />
 
-      <div className="pt-8 mx-auto max-w-[1500px]">
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-home gap-4 w-full">
-            {renderHomeList(blog_list)}
+      <FullContainer>
+        <Container className="py-10">
+          <div className="grid md:grid-cols-home gap-6 w-full">
+            <div>
+              <h2 className="font-bold text-xl border-b pb-1 mb-5">
+                Editor&apos;s Choice
+              </h2>
+              <div className="flex flex-col gap-4">
+                {blog_list?.slice(0, 2).map((item, index) => (
+                  <div className="flex flex-col">
+                    <Link
+                      key={index}
+                      title={item.title}
+                      href={`/${encodeURI(
+                        sanitizeUrl(item.article_category)
+                      )}/${encodeURI(sanitizeUrl(item.title))}`}
+                      className="relative overflow-hidden w-full h-44"
+                    >
+                      <Image
+                        src={
+                          item.image
+                            ? `${imagePath}/${item.image}`
+                            : "/no-image.png"
+                        }
+                        width={331}
+                        height={420}
+                        loading="eager"
+                        alt={
+                          item.altImage || item.tagline || "Article Thumbnail"
+                        }
+                        priority={true}
+                        title={
+                          item.imageTitle || item.title || "Blog Image Title"
+                        }
+                        className="w-full h-full absolute top-0 hover:scale-125 transition-all duration-1000"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </Link>
+
+                    <div className="flex flex-col justify-start text-start gap-2 py-3">
+                      <p className="text-sm font-bold text-gray-400 uppercase">
+                        {item.article_category}
+                      </p>
+                      <Link
+                        className="font-extrabold md:text-xl leading-tight hover:underline"
+                        title={item.title}
+                        href={`/${encodeURI(
+                          sanitizeUrl(item.article_category)
+                        )}/${encodeURI(sanitizeUrl(item.title))}`}
+                      >
+                        {item.title}
+                      </Link>
+                      <p className="text-sm font-medium text-gray-400">
+                        {item.published_at}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <Banner
               data={banner.value}
@@ -202,17 +209,21 @@ export default function Home({
               blog_list={blog_list}
             />
 
-            <div className="pt-5 px-4 flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <div className="lg:flex  lg:flex-col">
-                <h2 className=" text-center font-bold text-xl ">
-                  Popular-Posts
+                <h2 className="font-bold text-xl border-b pb-1 mb-3">
+                  Latest Posts
                 </h2>
                 {lastFiveBlogs.map((item, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-widget gap-3 py-3 border-b last:border-none"
+                    className="grid grid-cols-widget gap-3 py-3 first:pt-0 border-b last:border-none"
                   >
-                    <div>
+                    <div className="flex flex-col gap-2">
+                      <p className="text-sm font-bold text-gray-400 uppercase">
+                        {item.article_category}
+                      </p>
+
                       <Link
                         title={item.title || "Article Link"}
                         href={`/${encodeURI(
@@ -230,7 +241,7 @@ export default function Home({
                         sanitizeUrl(item.article_category)
                       )}/${encodeURI(sanitizeUrl(item.title))}`}
                     >
-                      <div className="overflow-hidden relative min-h-20 w-full bg-black flex-1 rounded">
+                      <div className="overflow-hidden relative min-h-24 w-full bg-black flex-1 rounded">
                         <Image
                           title={
                             item?.imageTitle ||
@@ -249,7 +260,7 @@ export default function Home({
                           }
                           fill
                           loading="lazy"
-                          className="object-cover hover:scale-125 transition-all"
+                          className="w-full h-full absolute top-0 hover:scale-125 transition-all duration-500"
                           style={{ objectFit: "cover" }}
                         />
                       </div>
@@ -259,84 +270,86 @@ export default function Home({
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Container>
 
-      <div className="pt-8 mx-auto max-w-[1500px]">
-        <div className="border-t-4 pt-5 px-4 text-center py-10">
-          <h2 className="bg-white px-5 text-4xl font-bold -mt-10 text-center">
-            Latest Posts
-          </h2>
-          <h2 className="px-5 text-xl font-semibold text-gray-500 text-center">
-            Stay up-to-date
-          </h2>
-        </div>
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
-            <div className="flex flex-col gap-10 w-full">
-              {renderBlogList(blog_list)}
+        <Container className="py-10">
+          <div className="border-t pt-5 px-4 text-center py-10 w-full flex flex-col items-center">
+            <h2 className="px-5 text-4xl font-bold -mt-10 text-center bg-white w-fit">
+              Latest Posts
+            </h2>
+            <h2 className="px-5 text-xl font-semibold text-gray-500 text-center mt-5">
+              Stay up-to-date
+            </h2>
+          </div>
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
+              <div className="flex flex-col gap-10 w-full">
+                {renderBlogList(blog_list)}
+              </div>
+
+              <Rightbar
+                widgets={page?.widgets}
+                about_me={about_me}
+                tag_list={tag_list}
+                blog_list={blog_list}
+                imagePath={imagePath}
+                categories={categories}
+              />
+            </div>
+          </div>
+        </Container>
+
+        <Container className="py-16">
+          <div className="border-t pt-5 px-4 text-center py-10 w-full flex flex-col items-center">
+            <h2 className="px-5 text-4xl font-bold -mt-10 text-center bg-white w-fit">
+              {"Editor's Choice"}
+            </h2>
+            <h2 className="px-5 text-xl font-semibold text-gray-500 text-center mt-5">
+              Optional Subtitle
+            </h2>
+          </div>
+
+          <div className="grid lg:grid-cols-2 text-center gap-8">
+            <div className="flex flex-col w-full">
+              {blog_list?.map(
+                (item, index) =>
+                  item.isFeatured && (
+                    <div className="text-start" key={index}>
+                      <BlogCard
+                        category={sanitizeUrl(item.article_category) || "#"}
+                        title={item.title}
+                        published_at={item.published_at}
+                        tagline={item.tagline}
+                        image={
+                          item.image
+                            ? `${imagePath}/${item.image}`
+                            : "/no-image.png"
+                        }
+                        href={`/${encodeURI(
+                          sanitizeUrl(item.article_category)
+                        )}/${encodeURI(sanitizeUrl(item.title))}`}
+                        imageHeight="h-72 md:h-[620px]"
+                        imageWidth="w-full"
+                        imageTitle={
+                          item.imageTitle || item.title || "Blog Image Title"
+                        }
+                        altImage={
+                          item.altImage || item.tagline || "Article Thumbnail"
+                        }
+                        className="object-cover"
+                      />
+                    </div>
+                  )
+              )}
             </div>
 
-            <Rightbar
-              // widgets={page?.widgets}
-              about_me={about_me}
-              tag_list={tag_list}
-              blog_list={blog_list}
-              imagePath={imagePath}
-              categories={categories}
-            />
+            <MustRead blog_list={blog_list} imagePath={imagePath} />
           </div>
-        </div>
-      </div>
-
-      <div className="border-t border-gray-200 px-3 py-9 md:px-9 mx-auto max-w-[1500px] text-center mt-20">
-        <h2 className="font-bold text-3xl -mt-14 bg-white ">
-          Editor&apos;s Choice
-        </h2>
-        <h2 className="font-bold text-xl bg-white text-gray-400  px-6">
-          Optional Subtitle
-        </h2>
-        <div className="grid lg:grid-cols-2 py-16 text-center gap-6">
-          <div className="flex flex-col  w-full">
-            {blog_list?.map(
-              (item, index) =>
-                item.isFeatured && (
-                  <div className="text-start" key={index}>
-                    <BlogCard
-                      category={sanitizeUrl(item.article_category) || "#"}
-                      title={item.title}
-                      published_at={item.published_at}
-                      tagline={item.tagline}
-                      image={
-                        item.image
-                          ? `${imagePath}/${item.image}`
-                          : "/no-image.png"
-                      }
-                      href={`/${encodeURI(
-                        sanitizeUrl(item.article_category)
-                      )}/${encodeURI(sanitizeUrl(item.title))}`}
-                      imageHeight="h-72 md:h-[620px]"
-                      imageWidth="w-full" // Ensuring the image takes full width
-                      imageTitle={
-                        item.imageTitle || item.title || "Blog Image Title"
-                      }
-                      altImage={
-                        item.altImage || item.tagline || "Article Thumbnail"
-                      }
-                      className="object-cover" // Ensure images are cropped to fit within the container
-                    />
-                  </div>
-                )
-            )}
-          </div>
-
-          {/* Must Read Section */}
-          <MustRead blog_list={blog_list} imagePath={imagePath} />
-        </div>
-      </div>
+        </Container>
+      </FullContainer>
 
       <Footer
-        logo={logo}
+        logo={logo_white}
         imagePath={imagePath}
         blog_list={blog_list}
         categories={categories}
@@ -444,6 +457,8 @@ export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
   const meta = await callBackendApi({ domain, type: "meta_home" });
   const logo = await callBackendApi({ domain, type: "logo" });
+  const logo_white = await callBackendApi({ domain, type: "logo" });
+
   const favicon = await callBackendApi({ domain, type: "favicon" });
   const blog_list = await callBackendApi({ domain, type: "blog_list" });
   const categories = await callBackendApi({ domain, type: "categories" });
@@ -472,6 +487,7 @@ export async function getServerSideProps({ req }) {
       meta: meta?.data[0]?.value || null,
       favicon: favicon?.data[0]?.file_name || null,
       logo: logo?.data[0] || null,
+      logo_white: logo_white?.data[0] || null,
       layout: layout?.data[0]?.value || null,
       blog_list: blog_list?.data[0]?.value || [],
       categories: categories?.data[0]?.value || null,

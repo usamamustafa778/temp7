@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-
-// Components
 import Container from "@/components/common/Container";
 import FullContainer from "@/components/common/FullContainer";
 import Navbar from "@/components/containers/Navbar";
@@ -10,11 +8,11 @@ import MarkdownIt from "markdown-it";
 import useBreadcrumbs from "@/lib/useBreadcrumbs";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { callBackendApi, getDomain, getImagePath } from "@/lib/myFun";
-
 import Head from "next/head";
 import { Raleway } from "next/font/google";
 import JsonLd from "@/components/json/JsonLd";
 import { useRouter } from "next/router";
+
 const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
 });
@@ -27,7 +25,6 @@ export default function Terms({
   logo,
   meta,
   terms,
-  layout,
   nav_type,
   categories,
   footer_type,
@@ -45,12 +42,8 @@ export default function Terms({
     }
   }, [currentPath, router]);
 
-  const page = layout?.find((page) => page.page === "terms");
-
   return (
-    <div
-      className={`min-h-screen flex flex-col justify-between ${myFont.className}`}
-    >
+    <div>
       <Head>
         <meta charSet="UTF-8" />
         <title>{meta?.title}</title>
@@ -61,7 +54,6 @@ export default function Terms({
           rel="canonical"
           href={`https://www.${domain}/terms-and-conditions`}
         />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -90,57 +82,38 @@ export default function Terms({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    logo={logo}
-                    nav_type={nav_type}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    contact_details={contact_details}
-                  />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "text":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <div
-                        className="prose max-w-full w-full mb-5"
-                        dangerouslySetInnerHTML={{ __html: content }}
-                      />
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    footer_type={footer_type}
-                  />
-                );
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+      <Navbar
+        logo={logo}
+        nav_type={nav_type}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        contact_details={contact_details}
+      />
 
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
+        </Container>
+      </FullContainer>
+
+      <FullContainer>
+        <Container>
+          <div
+            className="prose max-w-full w-full mb-5"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </Container>
+      </FullContainer>
+
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        footer_type={footer_type}
+      />
+
+      {/* Render JSON-LD Data */}
       <JsonLd
         data={{
           "@context": "https://schema.org",

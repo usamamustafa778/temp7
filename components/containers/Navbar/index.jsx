@@ -1,10 +1,11 @@
-import { Menu, Search, X } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useState } from "react";
 import Logo from "./Logo";
+import Link from "next/link";
+import Image from "next/image";
 import { sanitizeUrl } from "@/lib/myFun";
-
+import { Menu, Search, X } from "lucide-react";
+import Container from "@/components/common/Container";
+import FullContainer from "@/components/common/FullContainer";
 
 export default function Navbar({
   logo,
@@ -15,53 +16,234 @@ export default function Navbar({
   filteredBlogs,
   searchQuery,
   openSearch,
+  blog_list,
+  searchContainerRef,
 }) {
   const [sidebar, setSidebar] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleDropdown = (state) => {
-    setIsDropdownOpen(state);
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prevState) => !prevState);
   };
+
+  const lastThreeBlogs = blog_list.slice(-3);
 
   return (
     <>
-      <div className="mx-auto max-w-[1500px]">
-        <div className="p-10 border-b">
-          <Logo logo={logo} imagePath={imagePath} />
-        </div>
+      <FullContainer  >
+        <Container>
+          <div className="w-full">
+            <div className="p-10 border-b">
+              <Logo logo={logo} imagePath={imagePath} />
+            </div>
+            <div className=" flex items-center justify-between gap-3     mx-auto border-b-2 border-black p-6 max-w-[1500px]">
+              <Menu
+                onClick={() => setSidebar(true)}
+                className="cursor-pointer w-8"
+              />
 
-        <div className="flex items-center justify-between gap-3 relative mx-auto border-b-2 border-black pb-6 max-w-[1500px]">
-          <Menu onClick={() => setSidebar(true)} className="cursor-pointer w-8" />
-          
-          {/* Main Nav Links */}
-          <div className="hidden lg:flex space-x-4 lg:space-x-9">
-            <Link href="/">Home</Link>
+              {/* Main Nav Links */}
+              <div className="hidden lg:flex space-x-4 lg:space-x-9">
+                <Link title="Home" href="/">
+                  Home
+                </Link>
 
-            {/* Categories Link */}
-            <div
-              className="relative group"
-              onMouseEnter={() => toggleDropdown(true)}
-              onMouseLeave={() => toggleDropdown(false)}
-            >
-              <Link href="" className="hover:text-black">
+                {/* Categories Link */}
+                <div
+                  className="relative group"
+                  onMouseEnter={() => setIsDropdownOpen(true)}
+                  onMouseLeave={() => setIsDropdownOpen(false)}
+                >
+                  <Link title="Categories" href="" className="hover:text-black">
+                    Categories
+                  </Link>
+
+                  {/* Categories Dropdown */}
+                  {isDropdownOpen && (
+                    <div className="absolute left-0 top-full bg-white shadow-xl rounded-md z-50 p-2 w-[300px] grid grid-cols-1">
+                      {categories.map((category, index) => (
+                        <Link
+                          key={index}
+                          href={`/${encodeURI(sanitizeUrl(category.title))}`}
+                          className="border-b last:border-none"
+                        >
+                          <div className="flex items-center gap-4 hover:bg-gray-100 p-2 transition">
+                            <Image
+                              src={`${imagePath}/${category.image}`}
+                              alt={category.title}
+                              width={80}
+                              height={50}
+                              className="rounded-md h-14"
+                            />
+                            <span className="font-medium capitalize">
+                              {category.title}
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Link title="Contact" href="/contact">
+                  Contacts
+                </Link>
+                <Link
+                  title="About"
+                  href="/about"
+                  className="  mb-2 w-fit transition-all"
+                >
+                  About
+                </Link>
+              </div>
+
+              {/* Search Section */}
+              <div
+                className="flex items-center justify-end gap-3 text-gray-500 relative "
+                ref={searchContainerRef}
+              >
+                <div className="flex items-center justify-end gap-2">
+                  <Search
+                    className="w-5 md:w-4 text-black cursor-pointer"
+                    onClick={handleSearchToggle}
+                  />
+                </div>
+                {openSearch && (
+                  <>
+                    <div className="fixed lg:absolute top-16 lg:right-0 lg:ml-auto w-full lg:w-fit flex flex-col items-start justify-center lg:justify-end left-0">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="lg:text-xl border border-gray-300 inputField rounded-md outline-none bg-white shadow-xl p-2 px-3 mx-auto transition-opacity duration-300 ease-in-out opacity-100 w-5/6 lg:w-[650px] focus:ring-2 focus:ring-yellow-500"
+                        placeholder="Search..."
+                        autoFocus
+                      />
+                      {searchQuery && (
+                        <div className="lg:absolute top-full p-1 lg:p-3 right-0 bg-white shadow-2xl rounded-md mt-1 z-10 mx-auto w-5/6 lg:w-[650px]">
+                          {filteredBlogs?.length > 0 ? (
+                            filteredBlogs.map((item, index) => (
+                              <Link
+                                key={index}
+                                title={item.title}
+                                href={`/${sanitizeUrl(
+                                  item.article_category
+                                )}/${sanitizeUrl(item?.title)}`}
+                              >
+                                <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
+                                  {item.title}
+                                </div>
+                              </Link>
+                            ))
+                          ) : (
+                            <div className="p-2 text-gray-600">
+                              No articles found.
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </FullContainer>
+
+      {/* Sidebar for Mobile */}
+      <div
+        className={`sidebar fixed top-0 left-0 h-screen flex flex-col justify-between bg-black text-white z-50 overflow-x-hidden p-10 lg:p-6 ${
+          sidebar ? "open" : "-ml-96"
+        }`}
+      >
+        <div>
+          <div className="flex items-center justify-between">
+            <Logo logo={logo} imagePath={imagePath} />
+            <X
+              className="w-8 text-white cursor-pointer"
+              onClick={() => setSidebar(false)}
+            />
+          </div>
+
+          <div className="pt-32 hidden lg:flex flex-col items-center p-2">
+            <div className="lg:flex lg:flex-col">
+              {lastThreeBlogs.map((item, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-widget1 gap-4 py-3 border-b last:border-none"
+                >
+                  <Link
+                    title={item.title || "Article"}
+                    href={`/${encodeURI(
+                      sanitizeUrl(item.article_category)
+                    )}/${encodeURI(sanitizeUrl(item.title))}`}
+                  >
+                    <div className="overflow-hidden relative min-h-20 w-full bg-black flex-1 rounded-full">
+                      <Image
+                        title={
+                          item?.imageTitle || item?.title || "Article Thumbnail"
+                        }
+                        alt={
+                          item?.tagline || item?.altText || "Article Thumbnail"
+                        }
+                        src={
+                          item.image
+                            ? `${imagePath}/${item.image}`
+                            : "/no-image.png"
+                        }
+                        fill
+                        loading="lazy"
+                        className="object-cover hover:scale-125 transition-all"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  </Link>
+                  <div>
+                    <Link
+                      title={item.title || "Article Link"}
+                      href={`/${encodeURI(
+                        sanitizeUrl(item.article_category)
+                      )}/${encodeURI(sanitizeUrl(item.title))}`}
+                    >
+                      <p className="font-semibold leading-tight ">
+                        {item.title}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar Menu Links */}
+          <div className="flex lg:hidden text-2xl flex-col gap-6 mt-16">
+            <Link title="Home" href="/">
+              Home
+            </Link>
+            <div className="relative">
+              <button
+                title="Categories"
+                className="cursor-pointer"
+                onClick={toggleDropdown}
+              >
                 Categories
-              </Link>
+              </button>
 
               {/* Categories Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute left-0 top-full  bg-white shadow-lg rounded-md z-50 p-4 w-[300px] grid grid-cols-1 gap-4">
-                  {categories.map(( category, index) => (
-                    <Link key={index}
-                     
-                    href={`/${encodeURI(sanitizeUrl(category.title))}`}
-                     
-                     >
+                <div className="absolute left-0 top-full bg-white text-black shadow-lg rounded-md z-50 p-4 w-[300px] grid grid-cols-1 gap-4">
+                  {categories.map((category, index) => (
+                    <Link
+                      key={index}
+                      href={`/${encodeURI(sanitizeUrl(category.title))}`}
+                    >
                       <div className="flex items-center gap-4 hover:bg-gray-100 p-2 transition">
                         <Image
                           src={`${imagePath}/${category.image}`}
                           alt={category.title}
-                          width={50}
-                          height={50}
+                          width={80}
+                          height={80}
                           className="rounded-md"
                         />
                         <span className="font-semibold">{category.title}</span>
@@ -72,67 +254,17 @@ export default function Navbar({
               )}
             </div>
 
-            <Link href="">Features</Link>
-            <Link href="">Contacts</Link>
-          </div>
-
-          {/* Search Section */}
-          {openSearch ? (
-            <>
-              {searchQuery && (
-                <div className="absolute top-full p-3 right-0 bg-white shadow-2xl rounded-md mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
-                  {filteredBlogs?.map((item, index) => (
-                    <Link
-                      key={index}
-                      title={item.title}
-                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
-                    >
-                      <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
-                        {item.title}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="border border-gray-300 rounded-md p-1 transition-opacity duration-300 ease-in-out opacity-100"
-                placeholder="Search..."
-              />
-            </>
-          ) : (
-            <button
-              className="flex items-center gap-1 hover:bg-black hover:text-white transition-all rounded-md font-semibold p-2"
-              onClick={handleSearchToggle}
-            >
-              <Search className="w-5 md:w-4 cursor-pointer" />
-              Search
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Sidebar for Mobile */}
-      <div
-        className={`sidebar fixed top-0 left-0 h-screen flex flex-col justify-between bg-black text-white z-50 overflow-x-hidden p-10 lg:p-6 ${
-          sidebar ? "open" : "-ml-96"
-        }`}
-      >
-        <div>
-          <div className="flex items-center justify-between">
-            <Link href="/">
-              <Image height={70} width={140} src={logo} alt="logo" className="mt-1" />
+            <Link title="Contact" href="/contact">
+              Contacts
             </Link>
-            <X className="w-8 text-white cursor-pointer" onClick={() => setSidebar(false)} />
-          </div>
 
-          {/* Sidebar Menu Links */}
-          <div className="flex lg:hidden text-2xl flex-col gap-6 mt-16">
-            <Link href="/">Home</Link>
-            <Link href="#">Features</Link>
-            <Link href="#">Contacts</Link>
+            <Link
+              title="About"
+              href="/about"
+              className="uppercase text-sm mb-2 hover:text-button w-fit transition-all"
+            >
+              About
+            </Link>
           </div>
         </div>
         <div>

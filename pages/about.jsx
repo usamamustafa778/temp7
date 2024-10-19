@@ -37,14 +37,13 @@ export default function About({
   const markdownIt = new MarkdownIt();
   const content = markdownIt?.render(about_me?.value);
 
-  const page = layout?.find((page) => page.page === "about");
-
   const reversedLastFiveBlogs = useMemo(() => {
     const lastFiveBlogs = blog_list?.slice(-5);
     return lastFiveBlogs ? [...lastFiveBlogs].reverse() : [];
   }, [blog_list]);
 
   const breadcrumbs = useBreadcrumbs();
+  const page = layout?.find((page) => page.page === "about");
 
   return (
     <div className={myFont.className}>
@@ -55,7 +54,6 @@ export default function About({
         <link rel="author" href={`https://www.${domain}`} />
         <link rel="publisher" href={`https://www.${domain}`} />
         <link rel="canonical" href={`https://www.${domain}/about`} />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -84,72 +82,49 @@ export default function About({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    logo={logo}
-                    nav_type={nav_type}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    contact_details={contact_details}
-                  />
-                );
-              case "banner":
-                return (
-                  <AboutBanner image={`${imagePath}/${about_me.file_name}`} />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="mt-7" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "text":
-                return (
-                  <FullContainer>
-                    <Container className="pb-16 pt-8">
-                      <div className="grid grid-cols-about gap-16 w-full">
-                        <div
-                          className="markdown-content about_me prose max-w-full"
-                          dangerouslySetInnerHTML={{ __html: content }}
-                        />
-                        <Rightbar
-                          about_me={about_me}
-                          imagePath={imagePath}
-                          blog_list={blog_list}
-                          categories={categories}
-                          contact_details={contact_details}
-                          lastFiveBlogs={reversedLastFiveBlogs}
-                          widgets={page?.widgets}
-                        />
-                      </div>
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    footer_type={footer_type}
-                  />
-                );
+      <Navbar
+        logo={logo}
+        nav_type={nav_type}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        contact_details={contact_details}
+      />
 
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+      <AboutBanner image={`${imagePath}/${about_me.file_name}`} />
+
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="mt-7" />
+        </Container>
+      </FullContainer>
+      <div className=" mx-auto max-w-[1200px] " >
+        <div className="pb-16 pt-8">
+          <div className="grid grid-cols-about gap-16 w-full">
+            <div
+              className="markdown-content about_me prose max-w-full"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+            <Rightbar
+              widgets={page?.widgets}
+
+              about_me={about_me}
+              imagePath={imagePath}
+              blog_list={blog_list}
+              categories={categories}
+              contact_details={contact_details}
+              lastFiveBlogs={reversedLastFiveBlogs}
+            />
+          </div>
+        </div>
+      </div>
+
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        footer_type={footer_type}
+      />
 
       <JsonLd
         data={{

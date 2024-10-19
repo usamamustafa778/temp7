@@ -66,9 +66,10 @@ export default function Categories({
       router.replace("/about");
     }
   }, [category, router]);
+  const page = layout?.find((page) => page.page === "category");
 
   return (
-    <div >
+    <div>
       <Head>
         <meta charSet="UTF-8" />
         <title>
@@ -153,7 +154,9 @@ export default function Categories({
                   <div key={index}>
                     <Link
                       title={item?.title || "Article Link"}
-                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
+                      href={`/${sanitizeUrl(
+                        item.article_category
+                      )}/${sanitizeUrl(item?.title)}`}
                     >
                       <div className="overflow-hidden relative min-h-40 rounded lg:min-h-52 w-full bg-black flex-1">
                         <Image
@@ -172,7 +175,9 @@ export default function Categories({
                     </Link>
                     <Link
                       title={item?.title || "Article Link"}
-                      href={`/${sanitizeUrl(item.article_category)}/${sanitizeUrl(item?.title)}`}
+                      href={`/${sanitizeUrl(
+                        item.article_category
+                      )}/${sanitizeUrl(item?.title)}`}
                     >
                       <p className="mt-2 lg:mt-4 font-bold text-lg text-inherit leading-tight hover:underline">
                         {item.title}
@@ -180,8 +185,8 @@ export default function Categories({
                     </Link>
                     <div className="flex items-center gap-2 mt-2">
                       <p className="text-sm font-semibold">
-                        <span className="text-gray-400 text-sm">By</span>
-                        : {item.author}
+                        <span className="text-gray-400 text-sm">By</span>:{" "}
+                        {item.author}
                       </p>
                       <span className="text-gray-400">--</span>
                       <p className="text-sm text-gray-400 font-semibold">
@@ -196,6 +201,7 @@ export default function Categories({
 
             {/* Right Sidebar */}
             <Rightbar
+              widgets={page?.widgets}
               about_me={about_me}
               tag_list={tag_list}
               blog_list={blog_list}

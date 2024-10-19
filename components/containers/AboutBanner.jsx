@@ -5,7 +5,7 @@ import Container from "../common/Container";
 
 export default function AboutBanner({ image }) {
   return (
-    <FullContainer className="h-80 overflow-hidden p-10 bg-black/20 text-white text-center">
+    <FullContainer className="h-[800px] overflow-hidden p-10  text-white text-center mx-auto max-w-[1500px]">
       <Image
         src={image}
         title="About Us"
@@ -16,9 +16,9 @@ export default function AboutBanner({ image }) {
         className="-z-10 w-full h-full object-cover absolute top-0"
       />
       <Container className="gap-6">
-        <h1 className="font-extrabold text-6xl capitalize max-w-screen-md">
+        <h2 className="font-extrabold text-6xl capitalize max-w-screen-md">
           About Us
-        </h1>
+        </h2>
       </Container>
     </FullContainer>
   );

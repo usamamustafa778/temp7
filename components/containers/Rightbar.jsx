@@ -27,27 +27,27 @@ export default function Rightbar({
 
   const renderAbout = () => (
     <Link
-  title="About"
-  href="/about"
-  className="  flex flex-col items-center text-center border-b pb-20 "
->
-  <div className="relative overflow-hidden ">
-    <Image
-      src={`${imagePath}/${about_me.file_name}`}
-      title={`${content.slice(0, 100)}...`}
-      alt={`${content.slice(0, 100)}...`}
-      priority
-      width={500}
-      height={500}
-      loading="eager"
-      className="-z-10 object-cover"
-    />
-    <div className="absolute inset-0 flex items-center justify-center text-white text-xl bg-black bg-opacity-50">
-      {content.slice(0, 100)}...
-    </div>
-  </div>
-</Link>
-
+      title="About"
+      href="/about"
+      className="  flex flex-col items-center text-center border-b pb-20 "
+    >
+      <div className="relative overflow-hidden ">
+        <Image
+          src={`${imagePath}/${about_me.file_name}`}
+          title={`${content.slice(0, 100)}...`}
+          alt={`${content.slice(0, 100)}...`}
+          priority
+          width={500}
+          height={500}
+          loading="eager"
+          className="-z-10 object-cover"
+        />
+        <div className="absolute inset-0  flex flex-col justify-end text-start p-4  font-bold text-white  text-xl bg-black bg-opacity-50">
+          <h3 className=" lg:text-3xl font-semibold ">About</h3>
+          {content.slice(4, 50)}...
+        </div>
+      </div>
+    </Link>
   );
 
   const renderCategories = () => (
@@ -120,7 +120,7 @@ export default function Rightbar({
                 sanitizeUrl(item.article_category)
               )}/${encodeURI(sanitizeUrl(item.title))}`}
             >
-              <div className="overflow-hidden relative min-h-20 w-full bg-black flex-1 rounded">
+              <div className="overflow-hidden relative min-h-36 w-full bg-black flex-1 rounded">
                 <Image
                   title={item?.imageTitle || item?.title || "Article Thumbnail"}
                   alt={item?.tagline || item?.altText || "Article Thumbnail"}
@@ -175,12 +175,12 @@ export default function Rightbar({
                 </React.Fragment>
               )
             );
-          // case "article tags":
-          //   return (
-          //     tag_list.length > 0 && (
-          //       <React.Fragment key={item.name}>{renderTags()}</React.Fragment>
-          //     )
-          //   );
+          case "article tags":
+            return (
+              tag_list.length > 0 && (
+                <React.Fragment key={item.name}>{renderTags()}</React.Fragment>
+              )
+            );
           case "latest posts":
             return (
               lastFiveBlogs.length > 0 && (

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
 const BlogCard = ({
@@ -13,14 +12,12 @@ const BlogCard = ({
   imageTitle,
   imageHeight,
   published_at,
-  category
+  category,
 }) => {
   const encodedHref = href ? encodeURI(href) : "#";
 
   return (
-    <div
-      className={cn("flex flex-col  h-fit border-b border-gray-200", className)}
-    >
+    <div className={cn("flex flex-col h-fit", className)}>
       <Link
         title={imageTitle}
         href={encodedHref}
@@ -39,22 +36,20 @@ const BlogCard = ({
         />
       </Link>
 
-      <div className="flex flex-col  justify-start text-start gap-2 mt-3">
-      <p className="text-sm font-bold text-gray-800">{category}</p>
+      <div className="flex flex-col  justify-start text-start gap-3 py-4">
+        <p className="text-sm font-bold text-gray-400 uppercase">{category}</p>
 
         <Link
-          className="font-extrabold md:text-2xl leading-tight"
+          className="font-extrabold md:text-2xl leading-tight hover:underline"
           title={title}
           href={encodedHref}
         >
           {title}
         </Link>
+        <p className="text-sm font-medium text-gray-400">{published_at}</p>
       </div>
-      <p className="mt-3 text-xs md:hidden">{tagline?.slice(0, 100)}</p>
-      <p className="mt-3 text-sm hidden md:block">{tagline}</p>
-      <p className="text-sm font-medium text-gray-700">{published_at}</p>
-
-      
+      {/* <p className="mt-3 text-xs md:hidden">{tagline?.slice(0, 100)}</p>
+      <p className="mt-3 text-sm hidden md:block">{tagline}</p> */}
     </div>
   );
 };

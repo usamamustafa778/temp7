@@ -104,11 +104,7 @@ export default function Blog({
         nav_type={nav_type}
       />
 
-      <BlogBanner
-        myblog={myblog}
-        imagePath={imagePath}
-        blog_type={blog_type}
-      />
+      <BlogBanner myblog={myblog} imagePath={imagePath} blog_type={blog_type} />
 
       <FullContainer>
         <Container>
@@ -141,7 +137,9 @@ export default function Blog({
               category={category}
               contact_details={contact_details}
               blog_list={blog_list}
-              widgets={layout?.find((page) => page.page === "blog page")?.widgets}
+              widgets={
+                layout?.find((page) => page.page === "blog page")?.widgets
+              }
             />
           </div>
         </Container>

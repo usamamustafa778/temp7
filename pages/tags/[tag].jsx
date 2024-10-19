@@ -18,6 +18,7 @@ import useBreadcrumbs from "@/lib/useBreadcrumbs";
 // Font
 import { Raleway } from "next/font/google";
 import Rightbar from "@/components/containers/Rightbar";
+
 const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
 });
@@ -62,15 +63,8 @@ export default function Categories({
     }
   }, [tag, router]);
 
-  const page = layout?.find((page) => page.page === "Tag Page");
-
   return (
-    <div
-      className={cn(
-        myFont.className,
-        "flex flex-col min-h-screen justify-between"
-      )}
-    >
+    <div>
       <Head>
         <meta charSet="UTF-8" />
         <title>{meta?.title?.replaceAll("##tag##", tag)}</title>
@@ -81,7 +75,6 @@ export default function Categories({
         <link rel="author" href={`https://www.${domain}`} />
         <link rel="publisher" href={`https://www.${domain}`} />
         <link rel="canonical" href={`https://www.${domain}/tags/${tag}`} />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -110,132 +103,109 @@ export default function Categories({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    logo={logo}
-                    nav_type={nav_type}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                  />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "page result":
-                return (
-                  <FullContainer key={index} className="mb-12">
-                    <Container>
-                      <div className="grid grid-cols-1 md:grid-cols-home gap-12 w-full">
-                        <div>
-                          <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
-                            Tag: {tag?.replaceAll("-", " ")}
-                          </h1>
-                          {filteredBlogList?.length > 0 ? (
-                            ""
-                          ) : (
-                            <div className="flex items-center justify-center border px-10 py-40 text-lg bg-gray-200">
-                              No articles found related to {tag}
-                            </div>
-                          )}
-                          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {filteredBlogList.map((item, index) => (
-                              <div key={index}>
-                                <Link
-                                  title={item?.title || "Article Link"}
-                                  href={`/${item.article_category
-                                    ?.toLowerCase()
-                                    ?.replaceAll(" ", "-")}/${item.title
-                                    ?.replace(/ /g, "-")
-                                    ?.toLowerCase()}`}
-                                >
-                                  <div className="overflow-hidden relative min-h-40 rounded lg:min-h-52 w-full bg-black flex-1">
-                                    <Image
-                                      title={item?.title || item.imageTitle}
-                                      src={
-                                        item.image
-                                          ? `${imagePath}/${item.image}`
-                                          : "/no-image.png"
-                                      }
-                                      fill={true}
-                                      loading="lazy"
-                                      alt="blog"
-                                      className="w-full h-full object-cover absolute top-0 hover:scale-125 transition-all"
-                                    />
-                                  </div>
-                                </Link>
-                                <Link
-                                  title={item?.title || "Article Link"}
-                                  href={`/${item.article_category
-                                    ?.toLowerCase()
-                                    ?.replaceAll(" ", "-")}/${item.title
-                                    ?.replace(/ /g, "-")
-                                    ?.toLowerCase()}`}
-                                >
-                                  <p className="mt-2 lg:mt-4 font-bold text-lg text-inherit leading-tight hover:underline">
-                                    {item.title}
-                                  </p>
-                                </Link>
-                                <div className="flex items-center gap-2 mt-2">
-                                  <p className="text-sm font-semibold">
-                                    <span className="text-gray-400 text-sm">
-                                      By
-                                    </span>
-                                    : {item.author}
-                                  </p>
-                                  <span className="text-gray-400">--</span>
-                                  <p className="text-sm text-gray-400 font-semibold">
-                                    {dayjs(item?.published_at)?.format(
-                                      "MMM D, YYYY"
-                                    )}
-                                  </p>
-                                </div>
-                                <p className="text-gray-500 mt-4">
-                                  {item.tagline}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <Rightbar
-                          about_me={about_me}
-                          tag_list={tag_list}
-                          blog_list={blog_list}
-                          imagePath={imagePath}
-                          categories={categories}
-                          contact_details={contact_details}
-                          widgets={page?.widgets}
+      {/* Render Navbar */}
+      <Navbar
+        logo={logo}
+        nav_type={nav_type}
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+      />
+
+      {/* Render Breadcrumbs */}
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
+        </Container>
+      </FullContainer>
+
+      {/* Render Page Results */}
+      <FullContainer className="mb-12">
+        <Container>
+          <div className="grid grid-cols-1 md:grid-cols-home1 gap-12 w-full">
+            <div>
+              <h1 className="text-2xl font-semibold border-l-4 border-primary capitalize px-4 py-1 mb-7 w-full">
+                Tag: {tag?.replaceAll("-", " ")}
+              </h1>
+              {filteredBlogList.length === 0 && (
+                <div className="flex items-center justify-center border px-10 py-40 text-lg bg-gray-200">
+                  No articles found related to {tag}
+                </div>
+              )}
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                {filteredBlogList.map((item, index) => (
+                  <div key={index}>
+                    <Link
+                      title={item?.title || "Article Link"}
+                      href={`/${item.article_category
+                        ?.toLowerCase()
+                        ?.replaceAll(" ", "-")}/${item.title
+                        ?.replace(/ /g, "-")
+                        ?.toLowerCase()}`}
+                    >
+                      <div className="overflow-hidden relative min-h-40 rounded lg:min-h-52 w-full bg-black flex-1">
+                        <Image
+                          title={item?.title || item.imageTitle}
+                          src={
+                            item.image
+                              ? `${imagePath}/${item.image}`
+                              : "/no-image.png"
+                          }
+                          fill={true}
+                          loading="lazy"
+                          alt="blog"
+                          className="w-full h-full object-cover absolute top-0 hover:scale-125 transition-all"
                         />
                       </div>
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                  />
-                );
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+                    </Link>
+                    <Link
+                      title={item?.title || "Article Link"}
+                      href={`/${item.article_category
+                        ?.toLowerCase()
+                        ?.replaceAll(" ", "-")}/${item.title
+                        ?.replace(/ /g, "-")
+                        ?.toLowerCase()}`}
+                    >
+                      <p className="mt-2 lg:mt-4 font-bold text-lg text-inherit leading-tight hover:underline">
+                        {item.title}
+                      </p>
+                    </Link>
+                    <div className="flex items-center gap-2 mt-2">
+                      <p className="text-sm font-semibold">
+                        <span className="text-gray-400 text-sm">By</span>:{" "}
+                        {item.author}
+                      </p>
+                      <span className="text-gray-400">--</span>
+                      <p className="text-sm text-gray-400 font-semibold">
+                        {dayjs(item?.published_at)?.format("MMM D, YYYY")}
+                      </p>
+                    </div>
+                    <p className="text-gray-500 mt-4">{item.tagline}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
+            <Rightbar
+              about_me={about_me}
+              tag_list={tag_list}
+              blog_list={blog_list}
+              imagePath={imagePath}
+              categories={categories}
+              contact_details={contact_details}
+            />
+          </div>
+        </Container>
+      </FullContainer>
+
+      {/* Render Footer */}
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+      />
+
+      {/* Render JSON-LD */}
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -282,11 +252,6 @@ export default function Categories({
               name: domain,
               description: meta?.description,
               inLanguage: "en-US",
-              // potentialAction: {
-              //   "@type": "SearchAction",
-              //   target: `http://${domain}/search?q={search_term_string}`,
-              //   "query-input": "required name=search_term_string",
-              // },
               publisher: {
                 "@type": "Organization",
                 "@id": `http://${domain}`,
@@ -321,11 +286,7 @@ export async function getServerSideProps({ req, query }) {
   const domain = getDomain(req?.headers?.host);
   const { tag } = query;
 
-  const logo = await callBackendApi({
-    domain,
-    query,
-    type: "logo",
-  });
+  const logo = await callBackendApi({ domain, query, type: "logo" });
   const favicon = await callBackendApi({ domain, query, type: "favicon" });
   const banner = await callBackendApi({ domain, query, type: "banner" });
   const footer_text = await callBackendApi({
@@ -337,11 +298,6 @@ export async function getServerSideProps({ req, query }) {
     domain,
     query,
     type: "contact_details",
-  });
-  const copyright = await callBackendApi({
-    domain,
-    query,
-    type: "copyright",
   });
   const blog_list = await callBackendApi({ domain, query, type: "blog_list" });
   const categories = await callBackendApi({
@@ -379,13 +335,11 @@ export async function getServerSideProps({ req, query }) {
       logo: logo?.data[0],
       layout: layout?.data[0]?.value || null,
       banner: banner.data[0] || null,
-      blog_list: blog_list.data[0].value,
+      blog_list: blog_list.data[0]?.value,
       categories: categories?.data[0]?.value || null,
       footer_text: footer_text?.data[0]?.value || null,
-      copyright: copyright?.data[0]?.value || null,
-      domain: domain === "hellospace.us" ? req?.headers?.host : domain,
       about_me: about_me.data[0] || null,
-      contact_details: contact_details.data[0].value,
+      contact_details: contact_details.data[0].value || null,
       tag_list: tag_list?.data[0]?.value || null,
       nav_type: nav_type?.data[0]?.value || {},
     },

@@ -21,7 +21,7 @@ const myFont = Raleway({
   subsets: ["cyrillic", "cyrillic-ext", "latin", "latin-ext"],
 });
 
-export default function PriavcyPolicy({
+export default function PrivacyPolicy({
   domain,
   imagePath,
   logo,
@@ -31,7 +31,6 @@ export default function PriavcyPolicy({
   meta,
   contact_details,
   policy,
-  layout,
   nav_type,
   footer_type,
 }) {
@@ -47,11 +46,8 @@ export default function PriavcyPolicy({
     }
   }, [currentPath, router]);
 
-  const page = layout?.find((page) => page.page === "privacy policy");
-
   return (
     <div
-      className={`min-h-screen flex flex-col justify-between ${myFont.className}`}
     >
       <Head>
         <meta charSet="UTF-8" />
@@ -60,7 +56,6 @@ export default function PriavcyPolicy({
         <link rel="author" href={`https://www.${domain}`} />
         <link rel="publisher" href={`https://www.${domain}`} />
         <link rel="canonical" href={`https://www.${domain}/privacy-policy`} />
-        {/* <meta name="robots" content="noindex" /> */}
         <meta name="theme-color" content="#008DE5" />
         <link rel="manifest" href="/manifest.json" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -89,56 +84,36 @@ export default function PriavcyPolicy({
         />
       </Head>
 
-      {page?.enable
-        ? page?.sections?.map((item, index) => {
-            if (!item.enable) return null;
-            switch (item.section?.toLowerCase()) {
-              case "navbar":
-                return (
-                  <Navbar
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    logo={logo}
-                    contact_details={contact_details}
-                    nav_type={nav_type}
-                  />
-                );
-              case "breadcrumbs":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
-                    </Container>
-                  </FullContainer>
-                );
-              case "text":
-                return (
-                  <FullContainer key={index}>
-                    <Container>
-                      <div
-                        className="prose max-w-full w-full mb-5"
-                        dangerouslySetInnerHTML={{ __html: content }}
-                      />
-                    </Container>
-                  </FullContainer>
-                );
-              case "footer":
-                return (
-                  <Footer
-                    key={index}
-                    imagePath={imagePath}
-                    blog_list={blog_list}
-                    categories={categories}
-                    footer_type={footer_type}
-                  />
-                );
-              default:
-                return null;
-            }
-          })
-        : "Page Disabled, under maintenance"}
+      <Navbar
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        logo={logo}
+        contact_details={contact_details}
+        nav_type={nav_type}
+      />
+
+      <FullContainer>
+        <Container>
+          <Breadcrumbs breadcrumbs={breadcrumbs} className="py-7" />
+        </Container>
+      </FullContainer>
+
+      <FullContainer>
+        <Container>
+          <div
+            className="prose max-w-full w-full mb-5"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </Container>
+      </FullContainer>
+
+      <Footer
+        imagePath={imagePath}
+        blog_list={blog_list}
+        categories={categories}
+        footer_type={footer_type}
+      />
 
       <JsonLd
         data={{
@@ -150,7 +125,7 @@ export default function PriavcyPolicy({
               url: `http://${domain}/`,
               name: meta?.title,
               isPartOf: {
-                "@id": `http://${domain}`,
+                "@id": `http://${domain}/`,
               },
               description: meta?.description,
               inLanguage: "en-US",
@@ -177,11 +152,6 @@ export default function PriavcyPolicy({
               name: domain,
               description: meta?.description,
               inLanguage: "en-US",
-              // potentialAction: {
-              //   "@type": "SearchAction",
-              //   target: `http://${domain}/search?q={search_term_string}`,
-              //   "query-input": "required name=search_term_string",
-              // },
               publisher: {
                 "@type": "Organization",
                 "@id": `http://${domain}`,
@@ -255,7 +225,7 @@ export async function getServerSideProps({ req, query }) {
       blog_list: blog_list?.data[0]?.value || [],
       categories: categories?.data[0]?.value || null,
       meta: meta?.data[0]?.value || null,
-      contact_details: contact_details?.data[0]?.value,
+      contact_details: contact_details?.data[0]?.value || null,
       terms: terms?.data[0]?.value || "",
       policy: policy?.data[0]?.value || "",
       nav_type: nav_type?.data[0]?.value || {},
