@@ -131,7 +131,6 @@ export default function Home({
         />
       </Head>
 
-      {/* Directly render all components in order without conditions */}
       <Navbar
         logo={logo}
         imagePath={imagePath}
@@ -150,7 +149,7 @@ export default function Home({
               </h2>
               <div className="flex flex-col gap-4">
                 {blog_list?.slice(0, 2).map((item, index) => (
-                  <div className="flex flex-col" key={index} >
+                  <div className="flex flex-col" key={index}>
                     <Link
                       key={index}
                       title={item.title}
@@ -312,7 +311,7 @@ export default function Home({
             <div className="flex flex-col w-full">
               {blog_list?.map(
                 (item, index) =>
-                  item.isFeatured && (
+                  item.isEditorChoice && (
                     <div className="text-start" key={index}>
                       <BlogCard
                         category={sanitizeUrl(item.article_category) || "#"}
@@ -348,7 +347,7 @@ export default function Home({
       </FullContainer>
 
       <Footer
-        logo={logo_white}
+        logo={logo}
         imagePath={imagePath}
         blog_list={blog_list}
         categories={categories}

@@ -23,11 +23,11 @@ export default function Footer({
   console.log("Logo footer", logo);
 
   return (
-    <div className="bg-black text-white py-16 mt-12 border-t  ">
+    <div className="bg-white text-black py-16 mt-12 border-t border-gray-700  ">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-footer   gap-10 w-full mx-auto max-w-[1400px]">
           <div>
-            <Logo  logo={logo} imagePath={imagePath} />
+            <Logo logo={logo} imagePath={imagePath} />
           </div>
 
           <div className="grid grid-cols-2 gap-5 p-2">
@@ -98,9 +98,9 @@ export default function Footer({
           <LatestPosts blog_list={blog_list} imagePath={imagePath} />
         </div>
 
-        <p className=" mt-12 pt-14 border-t border-gray-700 text-center  text-sm">
+        <p className=" mt-12 pt-14 border-t  text-center  text-sm">
           {" "}
-          <span className=" text-sm text-yellow-300 "> Chronicle </span> @ 2024.
+          <span className=" text-sm text-yellow-500 "> Chronicle </span> @ 2024.
           All Right Reservfed{" "}
         </p>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,13 +21,34 @@ export default function Navbar({
 }) {
   const [sidebar, setSidebar] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const sidebarRef = useRef(null); // Add a ref for the sidebar
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
   };
 
   const lastThreeBlogs = blog_list.slice(-3);
-  console.log("Logo", logo);
+
+  // Handle click outside to close sidebar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebar(false); // Close sidebar if clicked outside
+      }
+    };
+
+    if (sidebar) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup the event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebar]);
+
   return (
     <>
       <FullContainer>
@@ -36,7 +57,7 @@ export default function Navbar({
             <div className="p-10 border-b">
               <Logo logo={logo} imagePath={imagePath} />
             </div>
-            <div className=" flex items-center justify-between gap-3     mx-auto border-b-2 border-black p-6 max-w-[1500px]">
+            <div className="flex items-center justify-between gap-3 mx-auto border-b-2 border-black p-6 max-w-[1500px]">
               <Menu
                 onClick={() => setSidebar(true)}
                 className="cursor-pointer w-8"
@@ -116,11 +137,7 @@ export default function Navbar({
                           <Link
                             title={item.title}
                             key={index}
-                            href={
-                              project_id
-                                ? `/${item.article_category.name}/${item.key}?${project_id}`
-                                : `/${item.article_category.name}/${item.key}`
-                            }
+                            href={`/${item.article_category.name}/${item.key}`}
                           >
                             <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
                               {item.title}
@@ -146,15 +163,16 @@ export default function Navbar({
 
       {/* Sidebar for Mobile */}
       <div
-        className={`sidebar fixed top-0 left-0 h-screen flex flex-col justify-between bg-black text-white z-50 overflow-x-hidden p-10 lg:p-6 ${
+        className={`sidebar fixed top-0 left-0 h-screen flex flex-col justify-between bg-white text-black shadow-xl z-50 overflow-x-hidden p-10 lg:p-6 ${
           sidebar ? "open" : "-ml-96"
         }`}
+        ref={sidebarRef}
       >
         <div>
           <div className="flex items-center justify-between">
             <Logo logo={logo} imagePath={imagePath} />
             <X
-              className="w-8 text-white cursor-pointer"
+              className="w-8 text-black cursor-pointer"
               onClick={() => setSidebar(false)}
             />
           </div>
@@ -259,9 +277,6 @@ export default function Navbar({
               About
             </Link>
           </div>
-        </div>
-        <div>
-          <p className="text-normal">© 2024 Chronicle. All Rights Reserved.</p>
         </div>
       </div>
 
