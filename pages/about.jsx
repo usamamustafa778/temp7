@@ -33,6 +33,8 @@ export default function About({
   layout,
   nav_type,
   footer_type,
+  logo_white,
+
 }) {
   const markdownIt = new MarkdownIt();
   const content = markdownIt?.render(about_me?.value);
@@ -120,8 +122,9 @@ export default function About({
       </div>
 
       <Footer
+        logo={logo_white}
         imagePath={imagePath}
-        blog_list={blog_list}
+         blog_list={blog_list}
         categories={categories}
         footer_type={footer_type}
       />
@@ -161,6 +164,8 @@ export default function About({
 export async function getServerSideProps({ req, query }) {
   const domain = getDomain(req?.headers?.host);
   const logo = await callBackendApi({ domain, query, type: "logo" });
+  const logo_white = await callBackendApi({ domain, query, type: "logo_white" });
+
   const favicon = await callBackendApi({ domain, query, type: "favicon" });
   const about_me = await callBackendApi({ domain, query, type: "about_me" });
   const categories = await callBackendApi({
@@ -195,6 +200,7 @@ export async function getServerSideProps({ req, query }) {
       meta: meta?.data[0]?.value || null,
       favicon: favicon?.data[0]?.file_name || null,
       logo: logo.data[0] || null,
+      logo_white: logo_white.data[0] || null,
       layout: layout?.data[0]?.value || null,
       about_me: about_me.data[0] || null,
       blog_list: blog_list.data[0]?.value,

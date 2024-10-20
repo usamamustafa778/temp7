@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const Logo = ({logo_white, logo, imagePath }) => {
+const Logo = ({ logo, imagePath }) => {
   const [hostName, setHostName] = useState("");
   const [windowWidth, setWindowWidth] = useState(1200);
 
@@ -39,7 +39,6 @@ const Logo = ({logo_white, logo, imagePath }) => {
   } = logo.value;
 
   const imageSrc = `${imagePath}/${logo.file_name}`;
-
 
   const dynamicLogoHeight =
     windowWidth < 768

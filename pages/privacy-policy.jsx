@@ -25,6 +25,7 @@ export default function PrivacyPolicy({
   domain,
   imagePath,
   logo,
+  logo_white,
   favicon,
   blog_list,
   categories,
@@ -109,6 +110,7 @@ export default function PrivacyPolicy({
       </FullContainer>
 
       <Footer
+      logo={logo_white}
         imagePath={imagePath}
         blog_list={blog_list}
         categories={categories}
@@ -193,6 +195,7 @@ export async function getServerSideProps({ req, query }) {
   const domain = getDomain(req?.headers?.host);
   const meta = await callBackendApi({ domain, query, type: "meta_privacy" });
   const logo = await callBackendApi({ domain, query, type: "logo" });
+  const logo_white = await callBackendApi({ domain, query, type: "logo_white" });
   const favicon = await callBackendApi({ domain, query, type: "favicon" });
   const blog_list = await callBackendApi({ domain, query, type: "blog_list" });
   const categories = await callBackendApi({
@@ -221,6 +224,7 @@ export async function getServerSideProps({ req, query }) {
       imagePath,
       favicon: favicon?.data[0]?.file_name || null,
       logo: logo?.data[0] || null,
+      logo_white: logo_white.data[0] || null,
       layout: layout?.data[0]?.value || null,
       blog_list: blog_list?.data[0]?.value || [],
       categories: categories?.data[0]?.value || null,

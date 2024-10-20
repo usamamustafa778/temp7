@@ -27,10 +27,10 @@ export default function Navbar({
   };
 
   const lastThreeBlogs = blog_list.slice(-3);
-
+  console.log("Logo", logo);
   return (
     <>
-      <FullContainer  >
+      <FullContainer>
         <Container>
           <div className="w-full">
             <div className="p-10 border-b">
@@ -71,8 +71,8 @@ export default function Navbar({
                             <Image
                               src={`${imagePath}/${category.image}`}
                               alt={category.title}
-                              width={80}
-                              height={50}
+                              width={60}
+                              height={100}
                               className="rounded-md h-14"
                             />
                             <span className="font-medium capitalize">
@@ -110,39 +110,32 @@ export default function Navbar({
                 </div>
                 {openSearch && (
                   <>
-                    <div className="fixed lg:absolute top-16 lg:right-0 lg:ml-auto w-full lg:w-fit flex flex-col items-start justify-center lg:justify-end left-0">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                        className="lg:text-xl border border-gray-300 inputField rounded-md outline-none bg-white shadow-xl p-2 px-3 mx-auto transition-opacity duration-300 ease-in-out opacity-100 w-5/6 lg:w-[650px] focus:ring-2 focus:ring-yellow-500"
-                        placeholder="Search..."
-                        autoFocus
-                      />
-                      {searchQuery && (
-                        <div className="lg:absolute top-full p-1 lg:p-3 right-0 bg-white shadow-2xl rounded-md mt-1 z-10 mx-auto w-5/6 lg:w-[650px]">
-                          {filteredBlogs?.length > 0 ? (
-                            filteredBlogs.map((item, index) => (
-                              <Link
-                                key={index}
-                                title={item.title}
-                                href={`/${sanitizeUrl(
-                                  item.article_category
-                                )}/${sanitizeUrl(item?.title)}`}
-                              >
-                                <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
-                                  {item.title}
-                                </div>
-                              </Link>
-                            ))
-                          ) : (
-                            <div className="p-2 text-gray-600">
-                              No articles found.
+                    {searchQuery && (
+                      <div className="absolute top-full p-3 right-0 bg-white shadow-2xl rounded-md mt-1 z-10 w-[calc(100vw-40px)] lg:w-[650px]">
+                        {filteredBlogs?.map((item, index) => (
+                          <Link
+                            title={item.title}
+                            key={index}
+                            href={
+                              project_id
+                                ? `/${item.article_category.name}/${item.key}?${project_id}`
+                                : `/${item.article_category.name}/${item.key}`
+                            }
+                          >
+                            <div className="p-2 hover:bg-gray-200 border-b text-gray-600">
+                              {item.title}
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      className="border border-gray-300 rounded-md p-1 transition-opacity duration-300 ease-in-out opacity-100"
+                      placeholder="Search..."
+                    />
                   </>
                 )}
               </div>
@@ -232,18 +225,18 @@ export default function Navbar({
 
               {/* Categories Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute left-0 top-full bg-white text-black shadow-lg rounded-md z-50 p-4 w-[300px] grid grid-cols-1 gap-4">
+                <div className="absolute left-0 top-full bg-white text-black shadow-lg rounded-md z-50 p-4 w-[300px]  grid grid-cols-1 gap-4">
                   {categories.map((category, index) => (
                     <Link
                       key={index}
                       href={`/${encodeURI(sanitizeUrl(category.title))}`}
                     >
-                      <div className="flex items-center gap-4 hover:bg-gray-100 p-2 transition">
+                      <div className="flex items-center  gap-4 hover:bg-gray-100 p-2 transition">
                         <Image
                           src={`${imagePath}/${category.image}`}
                           alt={category.title}
-                          width={80}
-                          height={80}
+                          width={60}
+                          height={100}
                           className="rounded-md"
                         />
                         <span className="font-semibold">{category.title}</span>

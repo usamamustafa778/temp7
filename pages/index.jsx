@@ -4,7 +4,6 @@ import Banner from "@/components/containers/Banner/Banner";
 import Container from "@/components/common/Container";
 import FullContainer from "@/components/common/FullContainer";
 import GoogleTagManager from "@/lib/GoogleTagManager";
-import MostPopular from "@/components/containers/MostPopular";
 import Rightbar from "@/components/containers/Rightbar";
 import Footer from "@/components/containers/Footer";
 import Navbar from "@/components/containers/Navbar";
@@ -37,7 +36,7 @@ export default function Home({
   tag_list,
   nav_type,
   footer_type,
-  logo_white
+  logo_white,
 }) {
   const lastFiveBlogs = blog_list.slice(-5);
 
@@ -151,7 +150,7 @@ export default function Home({
               </h2>
               <div className="flex flex-col gap-4">
                 {blog_list?.slice(0, 2).map((item, index) => (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col" key={index} >
                     <Link
                       key={index}
                       title={item.title}
@@ -457,7 +456,7 @@ export async function getServerSideProps({ req }) {
   const domain = getDomain(req?.headers?.host);
   const meta = await callBackendApi({ domain, type: "meta_home" });
   const logo = await callBackendApi({ domain, type: "logo" });
-  const logo_white = await callBackendApi({ domain, type: "logo" });
+  const logo_white = await callBackendApi({ domain, type: "logo_white" });
 
   const favicon = await callBackendApi({ domain, type: "favicon" });
   const blog_list = await callBackendApi({ domain, type: "blog_list" });

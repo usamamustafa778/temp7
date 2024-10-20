@@ -13,20 +13,21 @@ export default function Footer({
   blog_list,
   imagePath,
   category,
-  logo_white,
-  copyright,
+  logo,
 }) {
   const handleClick = (e) => {
     e.preventDefault();
     window.location.href = "/sitemap.xml";
   };
 
+  console.log("Logo footer", logo);
+
   return (
     <div className="bg-black text-white py-16 mt-12 border-t  ">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-footer   gap-10 w-full mx-auto max-w-[1400px]">
           <div>
-            <Logo className="text-white" logo={logo_white} imagePath={imagePath} />
+            <Logo  logo={logo} imagePath={imagePath} />
           </div>
 
           <div className="grid grid-cols-2 gap-5 p-2">

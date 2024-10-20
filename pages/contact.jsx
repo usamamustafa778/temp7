@@ -21,6 +21,7 @@ const myFont = Raleway({
 
 export default function Contact({
   logo,
+  logo_white,
   imagePath,
   blog_list,
   categories,
@@ -119,6 +120,7 @@ export default function Contact({
 
       {/* Render Footer */}
       <Footer
+      logo={logo_white}
         imagePath={imagePath}
         blog_list={blog_list}
         categories={categories}
@@ -161,6 +163,7 @@ export default function Contact({
 export async function getServerSideProps({ req, query }) {
   const domain = getDomain(req?.headers?.host);
   const logo = await callBackendApi({ domain, query, type: "logo" });
+  const logo_white = await callBackendApi({ domain, query, type: "logo_whites" });
   const favicon = await callBackendApi({ domain, query, type: "favicon" });
   const blog_list = await callBackendApi({ domain, query, type: "blog_list" });
   const contact_details = await callBackendApi({
@@ -186,6 +189,8 @@ export async function getServerSideProps({ req, query }) {
       domain,
       imagePath,
       logo: logo?.data[0],
+      logo_white: logo_white?.data[0],
+
       blog_list: blog_list.data[0]?.value,
       contact_details: contact_details.data[0].value || null,
       categories: categories?.data[0]?.value || null,

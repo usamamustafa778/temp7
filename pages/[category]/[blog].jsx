@@ -29,6 +29,7 @@ const myFont = Raleway({
 
 export default function Blog({
   logo,
+  logo_white,
   myblog,
   blog_list,
   imagePath,
@@ -148,6 +149,8 @@ export default function Blog({
       <LatestBlogs blogs={blog_list} imagePath={imagePath} />
 
       <Footer
+      logo={logo_white}
+
         imagePath={imagePath}
         blog_list={blog_list}
         categories={categories}
@@ -215,6 +218,7 @@ export async function getServerSideProps({ req, query }) {
   const myblog = await callBackendApi({ domain, type: isValidBlog?.key });
   const tag_list = await callBackendApi({ domain, type: "tag_list" });
   const logo = await callBackendApi({ domain, type: "logo" });
+  const logo_white = await callBackendApi({ domain, query, type: "logo_white" });
   const favicon = await callBackendApi({ domain, type: "favicon" });
   const about_me = await callBackendApi({ domain, type: "about_me" });
   const contact_details = await callBackendApi({
@@ -234,6 +238,7 @@ export async function getServerSideProps({ req, query }) {
       domain,
       imagePath,
       logo: logo?.data[0] || null,
+      logo_white: logo_white.data[0] || null,
       myblog: myblog?.data[0] || {},
       layout: layout?.data[0]?.value || null,
       blog_list: blog_list.data[0]?.value || null,
